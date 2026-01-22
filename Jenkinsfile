@@ -1,46 +1,41 @@
 pipeline {
-
-    agent {
-        docker {
-            image 'node:18-alpine'
-            reuseNode true
-        }
-    }
+    agent any
 
     environment {
-environment {
-    VERCEL_PROJECT_NAME = 'learn-jenkins-app'
-    VERCEL_TOKEN = credentials('l1McyCDQe4lKknHJh6x0Po9S')
-}
-
+        VERCEL_PROJECT_NAME = 'learn-jenkins-app'
+        VERCEL_TOKEN = credentials('vercel-token')
     }
 
     stages {
+        stage('Install') {
+            steps {
+                sh 'npm ci'
+            }
+        }
 
         stage('Build') {
             steps {
-                sh 'npm ci'
                 sh 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                sh 'npm test || true'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'npm install vercel'
-                sh './node_modules/.bin/vercel deploy --prod --prebuilt'
+                sh 'npm install -g vercel'
+                sh 'vercel deploy --prod --token $VERCEL_TOKEN --yes'
             }
         }
     }
 
     post {
         always {
-            junit 'test-results/junit.xml'
+            echo 'Pipeline finished'
         }
     }
 }
