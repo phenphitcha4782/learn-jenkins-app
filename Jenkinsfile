@@ -10,7 +10,7 @@ pipeline {
     environment {
 environment {
     VERCEL_PROJECT_NAME = 'learn-jenkins-app'
-    VERCEL_TOKEN = credentials('vercel-token')
+    VERCEL_TOKEN = credentials('l1McyCDQe4lKknHJh6x0Po9S')
 }
 
     }
